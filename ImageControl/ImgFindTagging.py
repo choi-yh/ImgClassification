@@ -1,10 +1,8 @@
+import os
 import glob
 import cv2
-import exifread
+import piexif
 import random
-
-dir_path = glob.glob('C:/Users/HYO/Desktop/sample/*.jpg')
-test = random.choice(dir_path)
 
 
 # (16, 16) 사이즈 binary image 변환
@@ -24,55 +22,74 @@ def hamming_distance(a, b):
     return distance
 
 
-# https://dev.to/petercour/read-exif-tags-with-python-461j
-def process_img(path):
-    f = open(path, 'rb')
-    tags = exifread.process_file(f)
-    info = {
-        'Image DateTime': tags.get('Image DateTime', '0'),
-        'GPS GPSLatitudeRef': tags.get('GPS GPSLatitudeRef', '0'),
-        'GPS GPSLatitude': tags.get('GPS GPSLatitude', '0'),
-        'GPS GPSLongitudeRef': tags.get('GPS GPSLongitudeRef', '0'),
-        'GPS GPSLongitude': tags.get('GPS GPSLongitude', '0')
-    }
-    return info
+# 전체 태그 얻기
+def getTag(path):
+    tags = piexif.load(path)  # return exif tags
+    return tags # class 'dict'
 
 
-inf = process_img(test)
-print(inf)
+# 찾은 파일들을 폴더 생성해서 새로 저장
+def _createFolder(directory='C:\\Users\\HYO\\Desktop/test'):
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except OSError:
+        print("Error: Creating directory. " + directory)
 
 
 # 유사 이미지 찾기
-def findImg(file_path, query):
+def findImg(folder_path, query):
     # 대상 이미지 불러오기
     query_img = cv2.imread(query, cv2.IMREAD_COLOR)
-    query_img = cv2.resize(query_img, (400, 400))
-    query_hash = img2hash(query_img)
-    query_inf = process_img(query) # 태그 정보 붙여줄 대상
+    query_img = cv2.resize(query_img, (400, 400)) # 이미지 사이즈 바꾸고
+    query_hash = img2hash(query_img) # 해쉬 이미지로 변환
+    cv2.imshow('query', query_img)  # 대상 이미지 띄워놓기
 
-    cv2.imshow('query', query_img) # 대상 이미지 띄워놓기
+    # 대상 이미지의 태그
+    qTag = getTag(query)
 
-    for path in file_path:
+    save_dir = 'C:\\Users\\HYO\\Desktop\\test' # 바탕화면에 폴더 만들기
+    _createFolder(save_dir) # 저장할 폴더 생성
+
+    for path in folder_path:
+        # 이미지 읽기
         img = cv2.imread(path, cv2.IMREAD_COLOR)
-        img = cv2.resize(img, (400, 400))
+        reimg = cv2.resize(img, (400, 400))
 
-        cv2.imshow("Searching...", img)
+        # 이미지 찾는 동안 띄워놓기
+        cv2.imshow("Searching...", reimg)
         cv2.waitKey(5)
 
         # hamming distance 를 통해 비교하기
-        img_hash = img2hash(img)
-        dst = hamming_distance(query_hash, img_hash) / 256
-        if dst < 0.20: # hamming distance 가 75퍼 이상 유사하면 출력
-            tags = process_img(path)
-            # gps 정보가 없을 때 태그 입력해주기
+        img_hash = img2hash(reimg)
+        dst = hamming_distance(query_hash, img_hash) / 256 # hamming distance 비율로 바꾸기 (0 ~ 1)
 
+        if dst < 0.20: # hamming distance 가 80퍼 이상 유사한 이미지를 찾는다.
+            print(path, dst)
+            cv2.imshow(path, reimg)
 
-            print(path, dst, tags)
-            cv2.imshow(path, img)
+            tag = getTag(path) # 유사 이미지의 태그 정보
+            # gps 태그가 없는 이미지들의 태그를 저장
+            if tag['GPS'] == {}:
+                tag["GPS"] = qTag["GPS"]
+
+            # 유사 이미지들을 gps태그를 수정해서 새로 저장
+            # 저장할 경로로 파일 이름 변경
+            tmp = path.find('\\')
+            sPath = save_dir + path[tmp:]
+            cv2.imwrite(sPath, img) # 새 경로로 이미지 저장
+
+            exif_bytes = piexif.dump(tag)
+            piexif.insert(exif_bytes, sPath) # 저장한 이미지에 수정된 태그 삽입
+
     cv2.destroyWindow("Searching...")
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 
-test = random.choice(dir_path)
+dir_path = glob.glob('C:/Users/HYO/Desktop/sample/*.jpg') # 폴더 불러오기
+
+# test = random.choice(dir_path)
+test = 'C:\\Users\\HYO\\Desktop\\sample\\1551016211768.jpg'
 findImg(dir_path, test)
+

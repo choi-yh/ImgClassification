@@ -2,7 +2,6 @@
 
 import glob
 import cv2
-import exifread
 import piexif
 
 
@@ -27,7 +26,6 @@ def getTag(path):
 
 
 # gps 태그만 얻기
-# https://dev.to/petercour/read-exif-tags-with-python-461j
 def getGps(path):
     tags = piexif.load(path)  # 태그 정보 읽기 (class 'dict')
     gpsInfo = {
@@ -41,18 +39,19 @@ def getGps(path):
 
 # gps 태그 입력해서 이미지 저장하기
 
-tag1 = getTag(test1)
-tag1gps = getGps(test1)
+tag1 = getTag(test1) # 전체 태그
+tag1gps = getGps(test1) # GPS 태그
 
-tag2 = getTag(test2)
-tag2gps = getGps(test2)
+tag2 = getTag(test2) # 전체 태그
+tag2gps = getGps(test2) # GPS 태그
 
+print(tag1)
+print(tag2)
 print(tag1gps)
-print(tag2gps)
 
 
 # # gps 태그 입력해서 이미지 저장하기
-# tag1["GPS"] = tag2gps
-# print(tag1["GPS"])
-# exif_bytes = piexif.dump(tag)
+tag1["GPS"] = tag2gps
+print(tag1["GPS"])
+# exif_bytes = piexif.dump(tag1)
 # piexif.insert(exif_bytes, test1) # 수정된 태그 입력 (바로 입력되서 꼭 복사본 만들어서 쓰자)
