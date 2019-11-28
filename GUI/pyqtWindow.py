@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import *
 
 
-class Image(QMainWindow):
+class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -14,11 +14,11 @@ class Image(QMainWindow):
         openFolder = menubar.addMenu('&File')
 
         self.setWindowTitle('Image Classification')
-        self.setGeometry(300, 300, 600, 400)
+        self.setGeometry(300, 300, 800, 600)
         self.show()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Image()
+    ex = MyWindow()
     sys.exit(app.exec_())

@@ -89,7 +89,7 @@ def findImg(folder_path, query):
 
 dir_path = glob.glob('C:/Users/HYO/Desktop/sample/*.jpg') # 폴더 불러오기
 
-# test = random.choice(dir_path)
-test = 'C:\\Users\\HYO\\Desktop\\sample\\1551016211768.jpg'
+test = random.choice(dir_path)
+# test = 'C:\\Users\\HYO\\Desktop\\sample\\1551023372268.jpg'
 findImg(dir_path, test)
 

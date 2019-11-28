@@ -6,7 +6,7 @@ import glob
 dir_path = glob.glob('C:\\Users\\HYO\\Desktop\\sample/*.jpg')
 
 
-class MyWindow(QWidget):
+class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()

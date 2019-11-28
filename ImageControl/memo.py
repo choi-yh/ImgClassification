@@ -1,5 +1,5 @@
 import glob
 
-dir = glob.glob('C:/Users/HYO/Desktop/sample/*jpg')
+dir_path = glob.glob('C:\\Users\\HYO\\Desktop\\sample/*.jpg')
 
-print(dir[0])
+print(dir_path)

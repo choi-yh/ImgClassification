@@ -4,7 +4,6 @@ import os
 import cv2
 import piexif
 import glob
-import random
 
 
 # 전체 태그 얻기
