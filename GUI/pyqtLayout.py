@@ -1,9 +1,8 @@
-import sys
 from PyQt5.QtWidgets import *
 import glob
 
-
-dir_path = glob.glob('C:\\Users\\HYO\\Desktop\\sample/*.jpg')
+dir_path = glob.glob('C:\\Users\\yhcho\\OneDrive\\바탕 화면\\sample/*.jpg')
+# dir_path = glob.glob('C:\\Users\\HYO\\Desktop\\sample/*.jpg')
 
 
 class MyWindow(QMainWindow):
@@ -14,6 +13,10 @@ class MyWindow(QMainWindow):
     def initUI(self):
         self.setWindowTitle('My Window')
         self.setGeometry(300, 300, 800, 600)
+
+        menubar = self.menuBar()
+        fileMenu = menubar.addMenu('&File')
+        openMenu = fileMenu.addMenu('&Open')
 
         qb = QComboBox()  # 디렉토리에 있는 파일명
         qb.addItems(dir_path)
@@ -28,10 +31,14 @@ class MyWindow(QMainWindow):
         layout.addWidget(button, 1, 0)
         layout.addWidget(label, 2, 0)
 
-        self.setLayout(layout)
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
 
 
 if __name__ == '__main__':
+    import sys
+
     app = QApplication(sys.argv)
     ex = MyWindow()
     ex.show()
