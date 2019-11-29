@@ -2,7 +2,6 @@ import os
 import glob
 import cv2
 import piexif
-import random
 
 
 # (16, 16) 사이즈 binary image 변환
@@ -29,7 +28,7 @@ def getTag(path):
 
 
 # 찾은 파일들을 폴더 생성해서 새로 저장
-def _createFolder(directory='C:\\Users\\HYO\\Desktop/test'):
+def _createFolder(directory):
     try:
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -38,17 +37,14 @@ def _createFolder(directory='C:\\Users\\HYO\\Desktop/test'):
 
 
 # 유사 이미지 찾기
-def findImg(folder_path, query):
+def findImg(folder_path, query, save_dir):
     # 대상 이미지 불러오기
     query_img = cv2.imread(query, cv2.IMREAD_COLOR)
     query_img = cv2.resize(query_img, (400, 400)) # 이미지 사이즈 바꾸고
     query_hash = img2hash(query_img) # 해쉬 이미지로 변환
     cv2.imshow('query', query_img)  # 대상 이미지 띄워놓기
 
-    # 대상 이미지의 태그
-    qTag = getTag(query)
-
-    save_dir = 'C:\\Users\\HYO\\Desktop\\test' # 바탕화면에 폴더 만들기
+    qTag = getTag(query) # 쿼리 이미지 태그
     _createFolder(save_dir) # 저장할 폴더 생성
 
     for path in folder_path:
@@ -88,8 +84,7 @@ def findImg(folder_path, query):
 
 
 dir_path = glob.glob('C:/Users/HYO/Desktop/sample/*.jpg') # 폴더 불러오기
-
-test = random.choice(dir_path)
-# test = 'C:\\Users\\HYO\\Desktop\\sample\\1551023372268.jpg'
-findImg(dir_path, test)
+test = 'C:\\Users\\HYO\\Desktop\\sample\\1551023372268.jpg'
+save = 'C:\\Users\\HYO\\Desktop\\test' # 바탕화면에 폴더 만들기
+findImg(dir_path, test, save)
 

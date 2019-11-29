@@ -3,7 +3,8 @@ from PyQt5 import uic
 from PyQt5.QtGui import QPixmap
 import glob
 
-form_class = uic.loadUiType("C:\\Users\\yhcho\\Anaconda3\\Lib\\site-packages\\PyQt5\\uic\\window.ui")[0] # [0]을 마지막에 붙여줘야 함
+
+form_class = uic.loadUiType("C:\\Users\\HYO\\Anaconda3\\Lib\\site-packages\\PyQt5\\uic\\window.ui")[0] # [0]을 마지막에 붙여줘야 함
 
 
 class MyWindow(QMainWindow, form_class):
